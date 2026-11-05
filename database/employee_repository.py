@@ -88,3 +88,11 @@ class EmployeeRepository:
                        (user, Employee_id, field, str(old_value), str(new_value)))
         conn.commit()
         conn.close()
+
+    def update_field(self, employee_id, field, value):
+        if not field:
+            return
+        conn = get_connection()
+        conn.execute(f"UPDATE employees SET {field}=? WHERE id=?", (value, employee_id))
+        conn.commit()
+        conn.close()

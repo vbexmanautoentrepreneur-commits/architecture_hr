@@ -9,41 +9,16 @@ class SalaryChart(FigureCanvasQTAgg):
         super().__init__(self.figure)
 
     def update_chart(self, employees):
-
         self.figure.clear()
-
         ax = self.figure.add_subplot(111)
-
         noms = [e.nom for e in employees]
         salaires = [e.salary for e in employees]
-
-        bars = ax.bar(
-            noms,
-            salaires,
-            color="#3498db"
-        )
-
-        ax.set_title(
-            "Salaires des employés"
-        )
-
+        bars = ax.bar(noms, salaires, color="#3498db")
+        ax.set_title("Salaires des employés")
         ax.set_ylabel("€")
-
-        ax.grid(
-            axis="y",
-            linestyle="--",
-            alpha=0.3
-        )
-
+        ax.grid(axis="y", linestyle="--", alpha=0.3)
         for bar in bars:
-
             y = bar.get_height()
-
-            ax.text(
-                bar.get_x() + bar.get_width() / 2,
-                y,
-                f"{y:.0f}",
-                ha="center"
-            )
+            ax.text(bar.get_x() + bar.get_width() / 2, y, f"{y:.0f}", ha="center")
 
         self.draw()
