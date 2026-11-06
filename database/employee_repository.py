@@ -28,7 +28,7 @@ class EmployeeRepository:
     def get_all(self):
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(""" SELECT * FROM Employees ORDER BY nom """)
+        cursor.execute(""" SELECT * FROM employees ORDER BY nom """)
         rows = cursor.fetchall()
         conn.close()
         return rows
@@ -36,9 +36,13 @@ class EmployeeRepository:
     def add(self, Employee):
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("""
-                        INSERT INTO Employees( nom, age, service, salary, date_embauche,
+        print("""
+                        INSERT INTO employees( nom, age, service, salary, date_embauche,
                          email, manager, telephone, ville, pays, date_naissance ) VALUES( ?,?,?,?,?,?,?,?,?,?,? ) """,
+                        (Employee.nom, Employee.age, Employee.service, Employee.salary, Employee.date_embauche.isoformat(),
+                         Employee.email, Employee.manager, Employee.telephone, Employee.ville, Employee.pays, Employee.date_naissance.isoformat()))
+        cursor.execute("""
+                        INSERT INTO employees( nom, age, service, salary, date_embauche,email, manager, telephone, ville, pays, date_naissance ) VALUES( ?,?,?,?,?,?,?,?,?,?,? ) """,
                         (Employee.nom, Employee.age, Employee.service, Employee.salary, Employee.date_embauche.isoformat(),
                          Employee.email, Employee.manager, Employee.telephone, Employee.ville, Employee.pays, Employee.date_naissance.isoformat()))
         conn.commit()
@@ -47,7 +51,7 @@ class EmployeeRepository:
     def update(self, Employee):
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(""" UPDATE Employees SET nom=?, age=?, service=?, salary=?, date_embauche=?,
+        cursor.execute(""" UPDATE employees SET nom=?, age=?, service=?, salary=?, date_embauche=?,
                          email=?, manager=?, telephone=?, ville=?, pays=?, date_naissance=? WHERE id=?
                         """,(Employee.nom, Employee.age, Employee.service, Employee.salary, Employee.date_embauche.isoformat(),
                             Employee.email, Employee.manager, Employee.telephone, Employee.ville,
@@ -58,14 +62,14 @@ class EmployeeRepository:
     def delete(self, Employee_id):
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(""" DELETE FROM Employees WHERE id=? """, (Employee_id,))
+        cursor.execute(""" DELETE FROM employees WHERE id=? """, (Employee_id,))
         conn.commit()
         conn.close()
 
     def search(self, text):
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute(""" SELECT * FROM Employees WHERE nom LIKE ? OR service LIKE ? OR manager LIKE ? """,
+        cursor.execute(""" SELECT * FROM employees WHERE nom LIKE ? OR service LIKE ? OR manager LIKE ? """,
                        (f"%{text}%", f"%{text}%", f"%{text}%"))
         result = cursor.fetchall()
         conn.close()
@@ -75,7 +79,7 @@ class EmployeeRepository:
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(""" SELECT COUNT(*) as effectif, AVG(age) as age_moyen,
-         AVG(salary) as salaire_moyen, SUM(salary) as masse FROM Employees """)
+         AVG(salary) as salaire_moyen, SUM(salary) as masse FROM employees """)
         result = cursor.fetchone()
         conn.close()
         return result

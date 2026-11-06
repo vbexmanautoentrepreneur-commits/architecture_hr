@@ -6,6 +6,7 @@ from ui.add_employee_dialog import AddEmployeeDialog
 from models.employee import Employee
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon,QColor
+from pyinstaller.ressources import resource_path
 
 class Dashboard(QWidget):
 
@@ -16,7 +17,7 @@ class Dashboard(QWidget):
         self.setMinimumSize(1200, 800)
         self.resize_to_screen(0.3)
         self.setWindowTitle("RH Manager Pro")
-        self.setWindowIcon(QIcon("icons/app.png"))
+        self.setWindowIcon(QIcon(str(resource_path("icons/app.png"))))
         self.build_ui()
         self.load_data()
 
@@ -141,13 +142,9 @@ class Dashboard(QWidget):
         # self.lbl_status.setText(f"{len(employees)} ligne(s) chargée(s)")
         kpi = self.repo.get_kpis()
         self.lbl_effectif.setText(f"{kpi['effectif']}\nEmployés")
-        self.lbl_age.setText(f"{kpi['age_moyen']:.1f}\nAns")
-        self.lbl_salaire.setText(f"{kpi['salaire_moyen']:.0f} €\nMoyenne")
-        self.lbl_masse.setText(f"{kpi['masse']:.0f} €\nTotal")
-        # self.lbl_effectif.setText(f"Effectif : {kpi['effectif']}")
-        # self.lbl_age.setText(f"Age moyen : {kpi['age_moyen']:.1f}" if kpi["age_moyen"] else "Age moyen : 0")
-        # self.lbl_salaire.setText(f"Salaire moyen : {kpi['salaire_moyen']:.0f} €" if kpi["salaire_moyen"] else "Salaire moyen : 0 €")
-        # self.lbl_masse.setText(f"Masse salariale : {kpi['masse']:.0f} €" if kpi["masse"] else "Masse salariale : 0 €")
+        self.lbl_age.setText(f"{kpi['age_moyen']:.1f}\nAns" if kpi['age_moyen'] is not None else "0.0\nAns")
+        self.lbl_salaire.setText(f"{kpi['salaire_moyen']:.0f} €\nMoyenne" if kpi['salaire_moyen'] is not None else "N/A\nMoyenne")
+        self.lbl_masse.setText(f"{kpi['masse']:,.0f} €\nTotal".replace(",", " ") if kpi['masse'] is not None else "N/A\nTotal")
         self.loading = False
 
     def populate_table(self, rows):
@@ -194,6 +191,7 @@ class Dashboard(QWidget):
                 pays=data["pays"],
                 date_naissance=data["date_naissance"]
             )
+            print(employee)
             self.repo.add(employee)
             self.load_data()
 
